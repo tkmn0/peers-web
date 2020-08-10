@@ -4,7 +4,7 @@ import RtcMediaModel from "#/lib/data/mediaModel/rtcMeidaModel";
 export default class SignalingManager {
     socket: SocketIOClient.Socket | null;
     delegate?: SignalingDelegate;
-    setupWebSocket: () => void;
+    setupWebSocket: (uri: string) => void;
     private setupSignalingEvent;
     emitLocalMediaStatus: (mediaModel: RtcMediaModel) => void;
     callToOthers: (roomId: string) => void;

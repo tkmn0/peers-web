@@ -14,12 +14,8 @@ export default class SignalingManager {
 
   delegate?: SignalingDelegate;
 
-  public setupWebSocket = () => {
-    let url = window.location.hostname;
-    if (process.env.NODE_ENV === "development") {
-      url += ":3001";
-    }
-    this.socket = io(url);
+  public setupWebSocket = (uri: string) => {
+    this.socket = io(uri);
     this.setupSignalingEvent();
   };
 

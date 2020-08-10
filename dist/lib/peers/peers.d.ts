@@ -10,6 +10,7 @@ export default class Peers {
     LocalStream: () => MediaStream | null;
     setLogLevel: (level: LogLevel) => void;
     constructor();
+    setupConnection(uri: string): void;
     destroy: () => void;
     addLocalStram: (stream: MediaStream) => void;
     joinRoom: (roomId: string) => void;

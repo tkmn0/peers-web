@@ -37,7 +37,10 @@ export default class Peers {
     this.signalingEventManager = new SignalingEventManger(this.peerManager);
     this.peerManager.peerDelegate = this.peerEventManager;
     this.signalingManager.delegate = this.signalingEventManager;
-    this.signalingManager.setupWebSocket();
+  }
+
+  public setupConnection(uri: string){
+    this.signalingManager.setupWebSocket(uri);
   }
 
   public destroy = () => {
