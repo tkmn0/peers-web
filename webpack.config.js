@@ -1,5 +1,4 @@
 const path = require('path');
-const WebpackCopyDocumentsPlugin = require('./webpack-copy-documents-pugin');
 
 module.exports = {
   mode: 'production',
@@ -25,5 +24,4 @@ module.exports = {
       '#': path.resolve(__dirname, 'src'),
     },
   },
-  plugins: [new WebpackCopyDocumentsPlugin()]
 };
