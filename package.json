@@ -1,6 +1,6 @@
 {
   "name": "peers-web",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "full-mesh connection implementation for WebRTC",
   "main": "dist/index.js",
   "license": "MIT",
