@@ -44,6 +44,10 @@ const constraints = {
 const localStream = await navigator.mediaDevices.getUserMedia(constraints);
 peers.addLocalStram(localStream);
 
+// join Room
+const roomId = "YOUR_EXITING_ROOM_ID";
+peers.joinRoom(roomId); // if roomId is empty, room and roomId will be created on server side.
+
 // toggle mute/unmute local Video
 peers.toggleLocalVideoMute();
 
