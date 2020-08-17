@@ -12,7 +12,7 @@ export default class Peers {
     constructor();
     setupConnection(uri: string): void;
     destroy: () => void;
-    addLocalStram: (stream: MediaStream) => void;
+    addLocalStream: (stream: MediaStream) => void;
     joinRoom: (roomId: string) => void;
     toggleLocalAudioMute: () => void | undefined;
     toggleLocalVideoMute: () => void | undefined;

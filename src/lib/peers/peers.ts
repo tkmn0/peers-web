@@ -39,7 +39,7 @@ export default class Peers {
     this.signalingManager.delegate = this.signalingEventManager;
   }
 
-  public setupConnection(uri: string){
+  public setupConnection(uri: string) {
     this.signalingManager.setupWebSocket(uri);
   }
 
@@ -51,7 +51,7 @@ export default class Peers {
     Logger.logger().info("peers", "peers destroyed");
   };
 
-  public addLocalStram = (stream: MediaStream) => {
+  public addLocalStream = (stream: MediaStream) => {
     this.peerManager.setupLocalStream(stream);
   };
 
