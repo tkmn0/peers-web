@@ -23,4 +23,6 @@ export default class Peer {
     onRemoteMediaStatusUpdated: (message: MediaStatusMessage) => void;
     toggleLocalAudioMute: () => void;
     tollgleLocalVideoMute: () => void;
+    private findPayload;
+    private transformSdp;
 }

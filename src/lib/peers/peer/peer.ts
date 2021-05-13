@@ -1,4 +1,3 @@
-import * as SemanticSDP from "semantic-sdp";
 import PeerDelegate from "./peerDelegate";
 import RtcMediaModel from "#/lib/data/mediaModel/rtcMeidaModel";
 import { MediaStatusMessage } from "#/lib/data/messaging/signalingMessage";
@@ -86,14 +85,11 @@ export default class Peer {
     }
     try {
       const sdp = await this.peerConnection!.createOffer();
-      const process = SemanticSDP.SDPInfo.parse(sdp.sdp!);
-      const audio = process.getMedia("audio");
-      const codecs = audio.getCodecs();
-      // eslint-disable-next-line no-restricted-syntax
-      for (const [key, value] of Object.entries(codecs)) {
-        console.log(`${key}: ${value}`);
+      const payload = this.findPayload(sdp.sdp!, "G722");
+      if (payload) {
+        sdp.sdp = this.transformSdp(sdp.sdp!, payload);
       }
-
+      console.log("offer:", sdp.sdp!);
       this.peerConnection!.setLocalDescription(sdp);
       this.delegate.OnSdpCreated(this.Id(), sdp);
     } catch (err) {
@@ -107,6 +103,11 @@ export default class Peer {
     }
     try {
       const sdp = await this.peerConnection!.createAnswer();
+      const payload = this.findPayload(sdp.sdp!, "G722");
+      if (payload) {
+        sdp.sdp = this.transformSdp(sdp.sdp!, payload);
+      }
+      console.log("answer:", sdp.sdp!);
       this.peerConnection.setLocalDescription(sdp);
       this.delegate.OnSdpCreated(this.Id(), sdp);
     } catch (err) {
@@ -172,5 +173,46 @@ export default class Peer {
     this.mediaModel.stream!.getVideoTracks()[0].enabled = !this.mediaModel
       .isVideoMuted;
     this.delegate.OnMediaStatusUpdated(this.Id(), this.mediaModel);
+  };
+
+  private findPayload = (sdp: string, codec: string) => {
+    const lines = sdp.split("\n").map((l) => l.trim());
+    const fmtpLines = lines.filter((line) => line.includes("a=rtpmap"));
+    let payload = "";
+    fmtpLines.forEach((fmtp) => {
+      const el = fmtp.split(" ");
+      const value = el[1].toLowerCase().split("/")[0];
+      if (value === codec.toLowerCase()) {
+        // eslint-disable-next-line prefer-destructuring
+        payload = el[0].split(":")[1];
+      }
+    });
+    return payload;
+  };
+
+  private transformSdp = (sdp: string, payload: string) => {
+    const lines = sdp.split("\n").map((l) => l.trim());
+    let targetIndex = -1;
+    let newLine;
+
+    lines.forEach((line, index) => {
+      if (line.indexOf("m=audio") === 0) {
+        targetIndex = index;
+        const el = line.split(" ");
+        if (!el.includes(payload)) {
+          return;
+        }
+        let payloads = el.slice(3);
+        payloads = payloads.filter((p) => p !== payload);
+        payloads.unshift(payload);
+        const head = el.slice(0, 3);
+        const newLineEls = head.concat(payloads);
+        newLine = newLineEls.join(" ");
+      }
+    });
+    if (newLine && targetIndex !== -1) {
+      lines[targetIndex] = newLine;
+    }
+    return lines.join("\n");
   };
 }
