@@ -85,6 +85,7 @@ export default class Peer {
     }
     try {
       const sdp = await this.peerConnection!.createOffer();
+      console.log('offer sdp', sdp.sdp);
       this.peerConnection!.setLocalDescription(sdp);
       this.delegate.OnSdpCreated(this.Id(), sdp);
     } catch (err) {
