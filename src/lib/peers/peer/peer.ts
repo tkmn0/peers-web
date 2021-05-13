@@ -1,4 +1,4 @@
-import * as sdpTransform from "sdp-transform";
+import * as SemanticSDP from "semantic-sdp";
 import PeerDelegate from "./peerDelegate";
 import RtcMediaModel from "#/lib/data/mediaModel/rtcMeidaModel";
 import { MediaStatusMessage } from "#/lib/data/messaging/signalingMessage";
@@ -78,13 +78,6 @@ export default class Peer {
       .forEach((track) =>
         this.rtpSender.push(this.peerConnection!.addTrack(track, stream))
       );
-    this.rtpSender.forEach((sender) => {
-      if (sender.track?.kind === "video") {
-        return;
-      }
-      const params = sender.getParameters();
-      console.log(params.codecs);
-    });
   };
 
   public createOfferAsync = async () => {
@@ -93,12 +86,14 @@ export default class Peer {
     }
     try {
       const sdp = await this.peerConnection!.createOffer();
-      const transform = sdpTransform.parse(sdp.sdp!);
-      transform.media.forEach((media) => {
-        if (media.type === "audio") {
-          console.log(media);
-        }
-      });
+      const process = SemanticSDP.SDPInfo.parse(sdp.sdp!);
+      const audio = process.getMedia("audio");
+      const codecs = audio.getCodecs();
+      // eslint-disable-next-line no-restricted-syntax
+      for (const [key, value] of Object.entries(codecs)) {
+        console.log(`${key}: ${value}`);
+      }
+
       this.peerConnection!.setLocalDescription(sdp);
       this.delegate.OnSdpCreated(this.Id(), sdp);
     } catch (err) {

@@ -22,7 +22,7 @@
     "lint": "eslint --fix ./src/**"
   },
   "dependencies": {
-    "sdp-transform": "^2.14.1",
+    "semantic-sdp": "^3.19.3",
     "socket.io": "^2.3.0",
     "socket.io-client": "^2.3.0"
   },
