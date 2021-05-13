@@ -77,6 +77,11 @@ export default class Peer {
       .forEach((track) =>
         this.rtpSender.push(this.peerConnection!.addTrack(track, stream))
       );
+    this.rtpSender.forEach((sender) => {
+      sender.getParameters().codecs.forEach((codec) => {
+        console.log("available codec", codec);
+      });
+    });
   };
 
   public createOfferAsync = async () => {
@@ -85,7 +90,6 @@ export default class Peer {
     }
     try {
       const sdp = await this.peerConnection!.createOffer();
-      console.log('offer sdp', sdp.sdp);
       this.peerConnection!.setLocalDescription(sdp);
       this.delegate.OnSdpCreated(this.Id(), sdp);
     } catch (err) {
