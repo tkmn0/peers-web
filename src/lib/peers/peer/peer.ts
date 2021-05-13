@@ -1,9 +1,8 @@
+import * as sdpTransform from "sdp-transform";
 import PeerDelegate from "./peerDelegate";
 import RtcMediaModel from "#/lib/data/mediaModel/rtcMeidaModel";
 import { MediaStatusMessage } from "#/lib/data/messaging/signalingMessage";
 import Logger from "#/lib/logger/logger";
-import * as sdpTransform from 'sdp-transform';
-
 
 export default class Peer {
   public Id = () => this.mediaModel.id;
@@ -79,6 +78,13 @@ export default class Peer {
       .forEach((track) =>
         this.rtpSender.push(this.peerConnection!.addTrack(track, stream))
       );
+    this.rtpSender.forEach((sender) => {
+      if (sender.track?.kind === "video") {
+        return;
+      }
+      const params = sender.getParameters();
+      console.log(params.codecs);
+    });
   };
 
   public createOfferAsync = async () => {
